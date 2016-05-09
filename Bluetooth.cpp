@@ -20,76 +20,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <SoftwareSerial.h>
-
 #include "Bluetooth.h"
 #include "PS2Keyboard.h"
 
-Bluetooth::Bluetooth(uint32_t baudRate, bool useSoftwareSerial, uint8_t softwareRXPin, uint8_t softwareTXPin)
+Bluetooth::Bluetooth()
 {
-	_useSoftwareSerial = useSoftwareSerial;
-	if (_useSoftwareSerial)
-	{
-		_serialStream = new SoftwareSerial(softwareRXPin, softwareTXPin);
-		((SoftwareSerial*)_serialStream)->begin(baudRate);
-	}
-	else
-	{
-		_serialStream = &Serial;
-		((HardwareSerial*)_serialStream)->begin(baudRate);
-	}
 }
 
 Bluetooth::~Bluetooth()
 {
-	if (_useSoftwareSerial)
-	{
-		delete(_serialStream);
-		_serialStream = 0;
-	}
 }
 
 void Bluetooth::sendMouseState(uint8_t btnState, uint8_t deltaX, uint8_t deltaY, uint8_t deltaZ)
 {
-	_serialStream->write((uint8_t)0xFD);
-	_serialStream->write((uint8_t)0x05);
-	_serialStream->write((uint8_t)0x02);
-	_serialStream->write(btnState);
-	_serialStream->write(deltaX);
-	_serialStream->write(deltaY);
-	_serialStream->write(deltaZ);
+	Serial.write((uint8_t)0xFD);
+	Serial.write((uint8_t)0x05);
+	Serial.write((uint8_t)0x02);
+	Serial.write(btnState);
+	Serial.write(deltaX);
+	Serial.write(deltaY);
+	Serial.write(deltaZ);
 }
 
 void Bluetooth::sendKeyboardState(uint8_t modifiers, uint8_t * keysPressed)
 {
-	_serialStream->write((uint8_t)0xFD);
-	_serialStream->write((uint8_t)0x09);
-	_serialStream->write((uint8_t)0x01);
-	_serialStream->write(modifiers);
-	_serialStream->write((uint8_t)0x00);
+	Serial.write((uint8_t)0xFD);
+	Serial.write((uint8_t)0x09);
+	Serial.write((uint8_t)0x01);
+	Serial.write(modifiers);
+	Serial.write((uint8_t)0x00);
 	for (uint8_t i = 0; i < MAX_KEYS_PRESSED; ++i)
 	{
-		_serialStream->write(keysPressed[i]);
+		Serial.write(keysPressed[i]);
 	}
 }
 
 void Bluetooth::sendConsumerReport(uint16_t consumerKeys)
 {
-	_serialStream->write((uint8_t)0xFD);
-	_serialStream->write((uint8_t)0x00);
-	_serialStream->write((uint8_t)0x02);
-	_serialStream->write((uint8_t)((consumerKeys >> 8) & 0xFF));
-	_serialStream->write((uint8_t)(consumerKeys & 0xFF));
-	_serialStream->write((uint8_t)0x00);
-	_serialStream->write((uint8_t)0x00);
-	_serialStream->write((uint8_t)0x00);
-	_serialStream->write((uint8_t)0x00);
+	Serial.write((uint8_t)0xFD);
+	Serial.write((uint8_t)0x00);
+	Serial.write((uint8_t)0x02);
+	Serial.write((uint8_t)((consumerKeys >> 8) & 0xFF));
+	Serial.write((uint8_t)(consumerKeys & 0xFF));
+	Serial.write((uint8_t)0x00);
+	Serial.write((uint8_t)0x00);
+	Serial.write((uint8_t)0x00);
+	Serial.write((uint8_t)0x00);
 }
 
 void Bluetooth::getKeyboardLEDState()
 {
-	_serialStream->write((uint8_t)0xFF);
-	_serialStream->write((uint8_t)0x02);
+	Serial.write((uint8_t)0xFF);
+	Serial.write((uint8_t)0x02);
 
 	//TODO
 	//what to read from BT device?

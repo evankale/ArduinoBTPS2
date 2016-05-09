@@ -28,17 +28,13 @@
 class Bluetooth
 {
 public:
-	Bluetooth(uint32_t baudRate, bool useSoftwareSerial, uint8_t softwareRXPin, uint8_t softwareTXPin);
+	Bluetooth();
 	~Bluetooth();
 
 	void sendMouseState(uint8_t btnState, uint8_t deltaX, uint8_t deltaY, uint8_t deltaZ);
 	void sendKeyboardState(uint8_t modifiers, uint8_t * keysPressed);
 	void sendConsumerReport(uint16_t consumerKeys);
 	void getKeyboardLEDState();
-
-private:
-	bool _useSoftwareSerial;
-	Stream * _serialStream;
 };
 
 #endif // ! BLUETOOTH_H

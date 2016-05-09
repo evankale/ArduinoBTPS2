@@ -29,60 +29,18 @@
 #define KEYBOARD_CLOCK 4
 #define KEYBOARD_DATA 5
 
-#define _DEBUG 0
-
-#if _DEBUG
-#define HARDWARE_SERIAL_RATE 38400
-#else
 #define HARDWARE_SERIAL_RATE 115200
-#endif
 
 PS2Mouse mouse(MOUSE_CLOCK, MOUSE_DATA);
 PS2Keyboard keyboard(KEYBOARD_CLOCK, KEYBOARD_DATA);
-
-#if _DEBUG
-#define BLUETOOTH_DEBUG_RX 7
-#define BLUETOOTH_DEBUG_TX 8
-#define BLUETOOTH_DEBUG_BAUD 9600
-Bluetooth bluetooth(BLUETOOTH_DEBUG_BAUD, true, BLUETOOTH_DEBUG_RX, BLUETOOTH_DEBUG_TX);
-#else
-Bluetooth bluetooth(HARDWARE_SERIAL_RATE, false, 0, 0);
-#endif
+Bluetooth bluetooth;
 
 void setup()
 {
-#if _DEBUG
-	Serial.begin(HARDWARE_SERIAL_RATE);
-	Serial.println("Setup started");
-#endif
-
-	delay(250);
-
-#if _DEBUG
-	Serial.println("Initializing mouse...");	
-#endif
-
-	bool mouseStatus = mouse.init();
-
-#if _DEBUG
-	if (mouseStatus)
-		Serial.println("Mouse detected!");
-	else
-		Serial.println("No mouse detected.");
-
-	Serial.println("Initializing keyboard...");
-#endif
-
-	bool keyboardStatus = keyboard.init();
-
-#if _DEBUG
-	if (keyboardStatus)
-		Serial.println("Keyboard detected!");
-	else
-		Serial.println("No keyboard detected.");
-
-	Serial.println("Setup complete");
-#endif
+  Serial.begin(HARDWARE_SERIAL_RATE);
+	delay(300);
+	mouse.init();
+	keyboard.init();
 }
 
 void loop()
